@@ -1,52 +1,61 @@
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.awt.*;
 
 /**
  * Main
  */
-public class Main {
+class Point {
+    int x, y;
 
-    public static double Dist(double d, double f, double d1, double f1) {
-        double res = Math.sqrt(Math.pow(Math.abs(d1 - d), 2) + Math.pow(Math.abs(f1 - f), 2));
-        return res;
+    Point(int i, int j) {
+        x = i;
+        y = j;
+
+    }
+}
+
+public class Main {
+    ArrayList<Double> arr = new ArrayList<>();
+
+    public double dist(int[][] n, int[][] x) {
+        double sub = Math.pow(x[0][0] - n[0][0], 2);
+        double sub2 = Math.pow(x[1][1] - n[1][1], 2);
+        double dq = Math.sqrt(sub + sub2);
+        arr.add(dq);
+        return 0;
     }
 
     public void Dots() {
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt(); /* n개의 점 */
-
-        int left = 0;
-        int right = 0;
-
-        Point p1 = new Point(2, 3);
-        /* 점 입력 받기 */
-        double[][] s = new double[n][2];
-        for (int i = 0; i < n; i++) {
-            s[i][0] = sc.nextDouble();
-            s[i][1] = sc.nextDouble();
-
-            System.out.println(s[i][0] + " " + s[i][1]);
-
-            if (n <= 3) {
-
+        int n = sc.nextInt();
+        double[][] arr = new double[n][2];
+        int i, j;
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < 2; j++) {
+                arr[i][j] = sc.nextDouble();
             }
-            if (n % 2 == 0) {
-                int mid1 = n / 2;
-
-            } else {
-                int mid2 = 0;
-
-            }
-            /* System.out.println(s[0][0] + "" + s[0][1] + "" + s[1][0] + "" + s[1][2]); */
-            /*
-             * double pri = Dist(s[0][0], s[0][1], s[1][0], s[1][2]);
-             * System.out.println(pri);
-             */
+        }
+        for (int j2 = 0; j2 < n; j2++) {
+            System.out.println(j2 + "번째는: " + arr[j2][0] + "" + arr[j2][1]);
         }
     }
 
+    public int div(int m, int n) {
+        int num = n - m + 1;
+        int mid = (n + m) / 2;
+        int left = div(m, mid);
+        int right = div(mid + 1, n);
+        int mindis = mid;
+
+        if (num <= 3) {
+
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
-        Main m = new Main();
-        m.Dots();
+        Main dot = new Main();
+        dot.Dots();
+
     }
 }
