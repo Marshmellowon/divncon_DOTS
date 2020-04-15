@@ -1,61 +1,105 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Main
  */
-class Point {
-    int x, y;
-
-    Point(int i, int j) {
-        x = i;
-        y = j;
-
-    }
-}
-
 public class Main {
-    ArrayList<Double> arr = new ArrayList<>();
-
-    public double dist(int[][] n, int[][] x) {
-        double sub = Math.pow(x[0][0] - n[0][0], 2);
-        double sub2 = Math.pow(x[1][1] - n[1][1], 2);
-        double dq = Math.sqrt(sub + sub2);
-        arr.add(dq);
-        return 0;
+    static int dist(Point p1, Point p2) {
+        return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
     }
 
-    public void Dots() {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        double[][] arr = new double[n][2];
-        int i, j;
-        for (i = 0; i < n; i++) {
-            for (j = 0; j < 2; j++) {
-                arr[i][j] = sc.nextDouble();
+    public static int mindist(List<Point> a, int x, int y) {
+        int ans = -1;
+        for (int i = x; i <= y - 1; i++) {
+            for (int j = i + 1; j <= y; j++) {
+                int k = dist(a.get(i), a.get(j));
+                if (ans == -1 || ans > k)
+                    ans = k;
             }
         }
-        for (int j2 = 0; j2 < n; j2++) {
-            System.out.println(j2 + "번째는: " + arr[j2][0] + "" + arr[j2][1]);
-        }
+        return ans;
     }
 
-    public int div(int m, int n) {
-        int num = n - m + 1;
-        int mid = (n + m) / 2;
-        int left = div(m, mid);
-        int right = div(mid + 1, n);
-        int mindis = mid;
-
-        if (num <= 3) {
-
+    public static int Dots(List<Point> a, int x, int y) {
+        int n = y - x + 1;
+        if (n <= 3) {
+            // n이 3이하면 완전탐색으로 x부터 y까지 가장 가까운 두 점 사이의 거리를 찾는다.
+            return mindist(a, x, y);
         }
-        return 0;
+        int mid = (x + y) / 2;
+        int left = Dots(a, x, mid);
+        int right = Dots(a, mid + 1, y);
+        int ans = Math.min(left, right);
+        List<Point> b = new ArrayList<>(); // 왼쪽과 오른쪽 사이의 점들을 저장할 List
+
+        for (int i = x; i <= y; i++) {
+            int d = a.get(i).x - a.get(mid).x;
+            if (d * d < ans) {
+                b.add(a.get(i));
+            }
+        }
+        Collections.sort(b, new PointComparator()); // y좌표순으로 정렬
+        int m = b.size();
+        for (int i = 0; i < m - 1; i++) {
+            for (int j = i + 1; j < m; j++) {
+                int k = b.get(j).y - b.get(i).y;
+                if (k * k < ans) {
+                    int d = dist(b.get(i), b.get(j));
+                    if (d < ans) {
+                        ans = d;
+                    }
+                } else { // y좌표 순으로 정렬했기 때문에 앞의 가장 가까운 점이 ans보다 크면 더 볼필요가 없다.
+                    break;
+                }
+            }
+        }
+        return ans;
     }
 
     public static void main(String[] args) {
-        Main dot = new Main();
-        dot.Dots();
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        List<Point> a = new ArrayList<>();
 
+        for (int i = 0; i < n; i++) {
+            int x = sc.nextInt();
+            int y = sc.nextInt();
+            a.add(new Point(x, y));
+        }
+        Collections.sort(a);
+        System.out.println(Dots(a, 0, n - 1));
     }
+}
+
+/* Point */
+class Point implements Comparable<Point> {
+    int x;
+    int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public int compareTo(Point o) {
+        int r = this.x - o.x;
+        if (r == 0)
+            r = this.y - o.y;
+        return r;
+    }
+}
+
+class PointComparator implements Comparator<Point> {
+    // y좌표 순으로 정렬하기 위한 Comparator
+
+    @Override
+    public int compare(Point o1, Point o2) {
+        return o1.y - o2.y;
+    }
+
 }
